@@ -55,7 +55,10 @@ class Todo(BaseModel):
     username: str
     password: str
     task: str
-
+class GetTodo(BaseModel):
+    username: str
+    password: str
+    task: str
 class UpdateTodo(BaseModel):
     username: str
     password: str
@@ -74,7 +77,7 @@ store_todo = {}
 user = {}
 
 @app.post('/register')
-async def registration(user: RegUser):
+async def registration(user: RegUser, APIKey = Depends(get_api_key)):
     try:
         df = pd.read_csv('data.csv')
     except:
@@ -94,7 +97,7 @@ async def registration(user: RegUser):
     return {'status':'registration done'}
 
 @app.post('/todo/add')
-async def add_todo(todo: Todo):
+async def add_todo(todo: Todo, APIKey = Depends(get_api_key)):
     df = pd.read_csv('data.csv')
     try:
         detail = "username is incorrect"
@@ -119,7 +122,7 @@ async def add_todo(todo: Todo):
     store_todo.append(todo)
     return todo
 @app.post('/todo/get_all_todo')
-async def get_all_todos(todo:Todo):
+async def get_all_todos(todo:GetTodo, APIKey = Depends(get_api_key)):
     df = pd.read_csv('data.csv')
     try:
         detail = "username is incorrect"
@@ -134,7 +137,7 @@ async def get_all_todos(todo:Todo):
         raise HTTPException(status_code=404, detail=detail)
 
 @app.post('/todo/update')
-async def update_todo(todo: UpdateTodo):
+async def update_todo(todo: UpdateTodo, APIKey = Depends(get_api_key)):
     try:
         df = pd.read_csv('data.csv')
         detail = "username is incorrect"
@@ -160,7 +163,7 @@ async def update_todo(todo: UpdateTodo):
         raise HTTPException(status_code=404, detail=detail)
 
 @app.post('/todo/delete')
-async def delete_todo( todo: DeleteTodo):
+async def delete_todo( todo: DeleteTodo, APIKey = Depends(get_api_key)):
     try:
         df = pd.read_csv('data.csv')
         detail = "username is incorrect"
