@@ -77,10 +77,12 @@ store_todo = {}
 user = {}
 
 @app.post('/register')
-async def registration(user: RegUser, APIKey = Depends(get_api_key)):
+async def registration(user: RegUser):
     try:
+        print("aaaaa")
         df = pd.read_csv('data.csv')
     except:
+        print("aaaaaaaaaaa")
         df = pd.DataFrame(columns=['username', 'password'])
     details = 'username already exists'
     if user.username in df['username'].unique():
@@ -93,11 +95,10 @@ async def registration(user: RegUser, APIKey = Depends(get_api_key)):
     # user = {'username': user.username, 'password': user.password, 'task':user.password}
     df = df.append(user, ignore_index=True)
     df.to_csv('data.csv',  index = False)
-    # df.to_csv('data.csv',mode= 'a', index=False)
     return {'status':'registration done'}
 
 @app.post('/todo/add')
-async def add_todo(todo: Todo, APIKey = Depends(get_api_key)):
+async def add_todo(todo: Todo):
     df = pd.read_csv('data.csv')
     try:
         detail = "username is incorrect"
@@ -122,7 +123,7 @@ async def add_todo(todo: Todo, APIKey = Depends(get_api_key)):
     store_todo.append(todo)
     return todo
 @app.post('/todo/get_all_todo')
-async def get_all_todos(todo:GetTodo, APIKey = Depends(get_api_key)):
+async def get_all_todos(todo:GetTodo):
     df = pd.read_csv('data.csv')
     try:
         detail = "username is incorrect"
@@ -137,7 +138,7 @@ async def get_all_todos(todo:GetTodo, APIKey = Depends(get_api_key)):
         raise HTTPException(status_code=404, detail=detail)
 
 @app.post('/todo/update')
-async def update_todo(todo: UpdateTodo, APIKey = Depends(get_api_key)):
+async def update_todo(todo: UpdateTodo):
     try:
         df = pd.read_csv('data.csv')
         detail = "username is incorrect"
@@ -163,7 +164,7 @@ async def update_todo(todo: UpdateTodo, APIKey = Depends(get_api_key)):
         raise HTTPException(status_code=404, detail=detail)
 
 @app.post('/todo/delete')
-async def delete_todo( todo: DeleteTodo, APIKey = Depends(get_api_key)):
+async def delete_todo( todo: DeleteTodo):
     try:
         df = pd.read_csv('data.csv')
         detail = "username is incorrect"
